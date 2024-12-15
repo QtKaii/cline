@@ -212,7 +212,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			customInstructions,
 			alwaysAllowReadOnly,
 			undefined,
-				undefined,
+			undefined,
 			historyItem,
 			viewportResolution,
 		)
