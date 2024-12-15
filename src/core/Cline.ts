@@ -78,6 +78,7 @@ export class Cline {
 	didFinishAborting = false
 	abandoned = false
 	private diffViewProvider: DiffViewProvider
+	viewportResolution?: string
 
 	// streaming
 	private currentStreamingContentIndex = 0
@@ -98,6 +99,7 @@ export class Cline {
 		task?: string,
 		images?: string[],
 		historyItem?: HistoryItem,
+		viewportResolution?: string,
 	) {
 		this.providerRef = new WeakRef(provider)
 		this.api = buildApiHandler(apiConfiguration)
@@ -107,6 +109,7 @@ export class Cline {
 		this.diffViewProvider = new DiffViewProvider(cwd)
 		this.customInstructions = customInstructions
 		this.alwaysAllowReadOnly = alwaysAllowReadOnly ?? false
+		this.viewportResolution = viewportResolution
 
 		if (historyItem) {
 			this.taskId = historyItem.id
@@ -2350,6 +2353,10 @@ export class Cline {
 				const result = formatResponse.formatFilesList(cwd, files, didHitLimit)
 				details += result
 			}
+		}
+
+		if (this.viewportResolution) {
+			details += `\n\n# Viewport Resolution\n${this.viewportResolution}`
 		}
 
 		return `<environment_details>\n${details.trim()}\n</environment_details>`
