@@ -53,6 +53,9 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage }: 
 
 	const handleInputChange = (field: keyof ApiConfiguration) => (event: any) => {
 		setApiConfiguration({ ...apiConfiguration, [field]: event.target.value })
+		if (field === "viewportResolution") {
+			vscode.postMessage({ type: "viewportResolution", resolution: event.target.value })
+		}
 	}
 
 	const { selectedProvider, selectedModelId, selectedModelInfo } = useMemo(() => {
@@ -83,6 +86,10 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage }: 
 		}
 	}, [])
 	useEvent("message", handleMessage)
+
+	useEffect(() => {
+		setViewportResolution(apiConfiguration?.viewportResolution || "1280x720")
+	}, [apiConfiguration?.viewportResolution])
 
 	/*
 	VSCodeDropdown has an open bug where dynamically rendered options don't auto select the provided value prop. You can see this for yourself by comparing  it with normal select/option elements, which work as expected.
@@ -651,36 +658,36 @@ const ApiOptions = ({ showModelOptions, apiErrorMessage, modelIdErrorMessage }: 
 					}}>
 					{modelIdErrorMessage}
 				</p>
-				)}
+			)}
 
-				<div style={{ marginBottom: 5 }}>
-					<label htmlFor="viewport-resolution">
-						<span style={{ fontWeight: 500 }}>Viewport Resolution</span>
-					</label>
-					<VSCodeDropdown
-						id="viewport-resolution"
-						value={viewportResolution}
-						onChange={(e: any) => setViewportResolution(e.target.value)}
-						style={{ width: "100%" }}>
-						<VSCodeOption value="1280x720">1280x720 (HD)</VSCodeOption>
-						<VSCodeOption value="1920x1080">1920x1080 (Full HD)</VSCodeOption>
-						<VSCodeOption value="1366x768">1366x768 (WXGA)</VSCodeOption>
-						<VSCodeOption value="1440x900">1440x900 (WXGA+)</VSCodeOption>
-						<VSCodeOption value="1536x864">1536x864 (HD+)</VSCodeOption>
-						<VSCodeOption value="1600x900">1600x900 (HD+)</VSCodeOption>
-						<VSCodeOption value="1680x1050">1680x1050 (WSXGA+)</VSCodeOption>
-						<VSCodeOption value="2560x1440">2560x1440 (QHD)</VSCodeOption>
-						<VSCodeOption value="3840x2160">3840x2160 (4K UHD)</VSCodeOption>
-					</VSCodeDropdown>
-					<p
-						style={{
-							fontSize: "12px",
-							marginTop: "5px",
-							color: "var(--vscode-descriptionForeground)",
-						}}>
-						Select a common resolution for the viewport while the extension is running.
-					</p>
-				</div>
+			<div style={{ marginBottom: 5 }}>
+				<label htmlFor="viewport-resolution">
+					<span style={{ fontWeight: 500 }}>Viewport Resolution</span>
+				</label>
+				<VSCodeDropdown
+					id="viewport-resolution"
+					value={viewportResolution}
+					onChange={handleInputChange("viewportResolution")}
+					style={{ width: "100%" }}>
+					<VSCodeOption value="1280x720">1280x720 (HD)</VSCodeOption>
+					<VSCodeOption value="1920x1080">1920x1080 (Full HD)</VSCodeOption>
+					<VSCodeOption value="1366x768">1366x768 (WXGA)</VSCodeOption>
+					<VSCodeOption value="1440x900">1440x900 (WXGA+)</VSCodeOption>
+					<VSCodeOption value="1536x864">1536x864 (HD+)</VSCodeOption>
+					<VSCodeOption value="1600x900">1600x900 (HD+)</VSCodeOption>
+					<VSCodeOption value="1680x1050">1680x1050 (WSXGA+)</VSCodeOption>
+					<VSCodeOption value="2560x1440">2560x1440 (QHD)</VSCodeOption>
+					<VSCodeOption value="3840x2160">3840x2160 (4K UHD)</VSCodeOption>
+				</VSCodeDropdown>
+				<p
+					style={{
+						fontSize: "12px",
+						marginTop: "5px",
+						color: "var(--vscode-descriptionForeground)",
+					}}>
+					Select a common resolution for the viewport while the extension is running.
+				</p>
+			</div>
 		</div>
 	)
 }

@@ -833,7 +833,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 	}
 
 	async getStateToPostToWebview() {
-		const { apiConfiguration, lastShownAnnouncementId, customInstructions, alwaysAllowReadOnly, taskHistory } =
+		const { apiConfiguration, lastShownAnnouncementId, customInstructions, alwaysAllowReadOnly, taskHistory, viewportResolution } =
 			await this.getState()
 		return {
 			version: this.context.extension?.packageJSON?.version ?? "",
@@ -844,6 +844,7 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 			clineMessages: this.cline?.clineMessages || [],
 			taskHistory: (taskHistory || []).filter((item) => item.ts && item.task).sort((a, b) => b.ts - a.ts),
 			shouldShowAnnouncement: lastShownAnnouncementId !== this.latestAnnouncementId,
+			viewportResolution,
 		}
 	}
 
